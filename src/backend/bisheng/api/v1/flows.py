@@ -4,11 +4,11 @@ from uuid import UUID
 
 from sqlalchemy import func
 
-from bisheng.api.utils import build_flow_no_yield, remove_api_keys
+from bisheng.api.utils import build_flow_no_yield, remove_api_keys, json_decode, json_encode
 from bisheng.api.v1.schemas import FlowListCreate, FlowListRead
 from bisheng.database.base import get_session
 from bisheng.database.models.flow import Flow, FlowCreate, FlowRead, FlowReadWithStyle, FlowUpdate
-from bisheng.database.models.user import User
+from bisheng.database.models.user import Users as User
 from bisheng.settings import settings
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from fastapi.encoders import jsonable_encoder
@@ -71,6 +71,7 @@ def read_flows(*,
             userMap = {user.user_id: user.user_name for user in db_user}
             for r in res:
                 r['user_name'] = userMap[r['user_id']]
+                r['data'] = json_encode(r['data'])
 
         return {'data': res, 'total': total_count}
 
@@ -109,17 +110,22 @@ def update_flow(*,
         # 上线校验
         try:
             art = {}
-            build_flow_no_yield(graph_data=db_flow.data, artifacts=art, process_file=False)
+            build_flow_no_yield(graph_data=json.loads(db_flow.data), artifacts=art, process_file=False)
         except Exception as exc:
             raise HTTPException(status_code=500, detail='Flow 编译不通过') from exc
 
     if settings.remove_api_keys:
         flow_data = remove_api_keys(flow_data)
+    res_data = {}
     for key, value in flow_data.items():
+        if key == 'data':
+            res_data = value
+            value = json_decode(value)
         setattr(db_flow, key, value)
     session.add(db_flow)
     session.commit()
     session.refresh(db_flow)
+    db_flow.data = res_data
     return db_flow
 
 

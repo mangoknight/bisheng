@@ -9,7 +9,7 @@ from bisheng.cache.utils import save_uploaded_file
 from bisheng.database.base import get_session
 from bisheng.database.models.knowledge import Knowledge, KnowledgeCreate, KnowledgeRead
 from bisheng.database.models.knowledge_file import KnowledgeFile
-from bisheng.database.models.user import User
+from bisheng.database.models.user import Users as User
 from bisheng.interface.importing.utils import import_vectorstore
 from bisheng.interface.initialize.loading import instantiate_vectorstore
 from bisheng.settings import settings

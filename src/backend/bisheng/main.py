@@ -44,7 +44,7 @@ def create_app():
         return JSONResponse(status_code=401, content={'detail': exc.message})
 
     app.include_router(router)
-    app.on_event('startup')(create_db_and_tables)
+    #app.on_event('startup')(create_db_and_tables)
     app.on_event('startup')(setup_llm_caching)
 
     return app

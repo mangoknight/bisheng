@@ -4,7 +4,7 @@ import json
 from sqlalchemy import func
 
 from bisheng.database.base import get_session
-from bisheng.database.models.user import (User, UserCreate, UserLogin, UserRead, UserUpdate)
+from bisheng.database.models.user import (Users as User, UserCreate, UserLogin, UserRead, UserUpdate)
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordBearer
@@ -36,7 +36,7 @@ async def regist(*, session: Session = Depends(get_session), user: UserCreate):
 async def login(*, session: Session = Depends(get_session), user: UserLogin, Authorize: AuthJWT = Depends()):
     # check if user already exist
     password = md5_hash(user.password)
-    db_user = session.exec(select(User).where(User.user_name == user.user_name, User.password == password)).first()
+    db_user = session.exec(select(User).where(User.user_name == user.user_name, User.passwords == password)).first()
     if db_user:
         if 1 == db_user.delete:
             raise HTTPException(status_code=500, detail='该账号已被禁用，请联系管理员')

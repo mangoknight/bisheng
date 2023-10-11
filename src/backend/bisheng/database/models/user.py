@@ -32,9 +32,9 @@ class UserBase(SQLModelSerializable):
     )
 
 
-class User(UserBase, table=True):
+class Users(UserBase, table=True):
     user_id: Optional[int] = Field(default=None, primary_key=True)
-    password: str = Field(index=False)
+    passwords: str = Field(index=False)
 
 
 class UserRead(UserBase):

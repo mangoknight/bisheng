@@ -19,9 +19,8 @@ class FlowBase(SQLModelSerializable):
     data: Optional[Dict] = Field(default=None)
     logo: Optional[str] = Field(index=False)
     status: Optional[int] = Field(index=False, default=1)
-    update_time: Optional[datetime] = Field(sa_column=Column(
-        DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP')))
-    create_time: Optional[datetime] = Field(default=(datetime.now()).strftime('%Y-%m-%d %H:%M:%S'), index=True)
+    update_time: Optional[str] = Field(default=(datetime.now()).strftime('%Y-%m-%d %H:%M:%S'), index=True)
+    create_time: Optional[str] = Field(default=(datetime.now()).strftime('%Y-%m-%d %H:%M:%S'), index=True)
 
     @validator('data')
     def validate_json(v):
@@ -42,7 +41,7 @@ class FlowBase(SQLModelSerializable):
 
 class Flow(FlowBase, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True, unique=True)
-    data: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+    data: Optional[str] = Field(default=None)
     style: Optional['FlowStyle'] = Relationship(
         back_populates='flow',
         # use "uselist=False" to make it a one-to-one relationship

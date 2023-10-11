@@ -10,7 +10,7 @@ from sqlmodel import Field
 class TemplateSkillBase(SQLModelSerializable):
     name: str = Field(index=True)
     description: str = Field(index=False)
-    data: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+    data: Optional[str] = Field(default=None)
     order_num: Optional[int] = Field(default=None)
     flow_id: Optional[UUID] = Field(index=True)
     create_time: Optional[datetime] = Field(

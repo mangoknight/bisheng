@@ -1,7 +1,7 @@
 from bisheng.api.v1.schemas import StreamData
 from bisheng.graph.graph.base import Graph
 from bisheng.utils.logger import logger
-
+import json,base64
 API_WORDS = ['api', 'key', 'token']
 
 
@@ -171,3 +171,16 @@ def build_flow_no_yield(graph_data: dict,
         except Exception as exc:
             raise exc
     return graph
+def json_decode(json_obj):
+    try:
+        return base64.b64encode(json.dumps(json_obj).encode('utf-8')).decode('utf-8')
+    except Exception as e:
+        logger.error(f'json_decode error: {e}')
+        return None
+
+def json_encode(json_str):
+    try:
+        return json.loads(base64.b64decode(json_str).decode('utf-8'))
+    except Exception as e:
+        logger.error(f'json_encode error: {e}')
+        return None

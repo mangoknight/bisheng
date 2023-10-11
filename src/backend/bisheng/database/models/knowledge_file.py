@@ -13,19 +13,8 @@ class KnowledgeFileBase(SQLModelSerializable):
     md5: Optional[str] = Field(index=False)
     status: Optional[int] = Field(index=False)
     object_name: Optional[str] = Field(index=False)
-    create_time: Optional[datetime] = Field(
-        sa_column=Column(
-            DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP')
-        )
-    )
-    update_time: Optional[datetime] = Field(
-        sa_column=Column(
-            DateTime,
-            nullable=False,
-            server_default=text('CURRENT_TIMESTAMP'),
-            onupdate=text('CURRENT_TIMESTAMP')
-        )
-    )
+    create_time: Optional[str] = Field(default=(datetime.now()).strftime('%Y-%m-%d %H:%M:%S'), index=True)
+    update_time: Optional[str] = Field(default=(datetime.now()).strftime('%Y-%m-%d %H:%M:%S'), index=True)
 
 
 class KnowledgeFile(KnowledgeFileBase, table=True):
